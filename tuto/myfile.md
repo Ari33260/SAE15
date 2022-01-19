@@ -1,4 +1,4 @@
-temps;Adresse IP source;Adresse IP de destination;Flag;Numero de sequence;Numero accuse de reception;Taille du paquet;
+temps;Adresse IP Source;Adresse IP Destinataire;Flag;Numero de sequence;Numero accuse de réception;Taille du paquet;
 11:42:04.766656;BP-Linux8.ssh;192.168.190.130.50019:;[P.],;2243505564:2243505672,;1972915080,;108
 11:42:04.766694;BP-Linux8.ssh;192.168.190.130.50019:;[P.],;108:144,;1,;36
 11:42:04.766723;BP-Linux8.ssh;192.168.190.130.50019:;[P.],;144:252,;1,;108

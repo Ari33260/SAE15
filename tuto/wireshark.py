@@ -1,73 +1,63 @@
-import numpy as np
 import os
     
-    
+file = input("Merci de rentrer le PWD de votre fichier TCP Dump : \n")
 try:
-    #with open("evenementSAE_15.ics", encoding="utf8") as fh:
-    with open("wireshark.txt", encoding="utf8") as fh:
+    with open(file, encoding="utf8") as fh:
         res=fh.read()
 except:
     print("Le fichier n'existe pas %s", os.path.abspath("wireshark.txt"))
-    
-tamere = open("myfile.csv", "w")
-#res=tools_sae.lecture_fichier("ADE_Cal.ics")
 ress=res.split('\n')
-#comptage=ress.count('BEGIN:VEVENT')
-tableau_evenements=np.array([])
-SYN ="[S],"
-POUSSER = "[P.],"
-RST = "[R],"
 resultat=[]
 ip={}
 for event in ress:
     # Initialisation chaine de carcatere
     if event.startswith('11:42'):
         texte=event.split(" ")
+        ipsrc=texte[2].split(".")
+        ipdst=texte[4].split(".")
         if texte[5] == "Flags":
             evenement=texte[0]+';'+texte[2]+';'+texte[4]+';'+texte[6]
             if texte[6] == "[S],":
                 evenement=evenement+';'+texte[8]
+                if texte[-2] == "length":
+                    texte[-1].strip(":")
+                    evenement=evenement+';'+';'+texte[-1]
+                else:
+                    length = texte[-2].strip(":")
+                    evenement=evenement+';'+';'+length
             if texte[6] == "[P.],":
-                evenment=evenement+';'+texte[8]+';'+texte[10]
+                evenement=evenement+';'+texte[8]+';'+texte[10]+';'+texte[-1]
             if texte[6] == "[.],":
-                evenement=evenement+';'+texte[8]
+                evenement=evenement+';'+';'+texte[8]+';'+texte[-1]
             if texte[6] == "[S.],":
                 evenement=evenement+';'+texte[8]+';'+texte[10]
         else:
             evenement=texte[0]+';'+texte[2]+';'+texte[4]+';'
-
-            
-            
-            
-        #print(evenement+evenement_2+evenement_3)
-        #print("\n")
-        #strevenement= ";".join(evenement+evenement_2+evenement_3)+"\n"
-        print(evenement+'\n')
         resultat.append(evenement+'\n')
-        ipv4=texte[2].split(".")
-        if len(ipv4)>1:
-            del ipv4[-1]
-            stripv4 = ".".join(ipv4)
+        if len(ipsrc)>1:
+            del ipsrc[-1]
+            stripsrc = ".".join(ipsrc)
         else:
-            stripv4=ipv4[0]
+            stripsrc=ipsrc[0]
         try:
-            ip[stripv4]
+            ip[stripsrc]
         except KeyError:
-            ip[stripv4]=1
+            ip[stripsrc]=1
         else:
-            ip[stripv4]+=1
-for key in ip.keys():
-    print(key)
+            ip[stripsrc]+=1
     
             
 with open('myfile.csv','w',newline='') as fhcsv:
-    fhcsv.write('temps;Adresse IP Source;Adresse IP Destinataire;Flag;Numéro de séquence;Numéro accusé de réception;Taille du paquet;\n')
+    fhcsv.write('temps;Adresse IP source;Adresse IP de destination;Flag;Numero de sequence;Numero accuse de reception;Taille du paquet;\n')
     for i in resultat:    
         fhcsv.write(i)
+print("------ \n")
+print("Tableau Importé en format CSV ! \n")
+print("Nom du fichier : myfile.csv \n")
+print("------ \n")
+print("Voici les adresses IP qui émettent le plus au sein du réseau : \n")
 
-#print(sorted(ip.items(), key=lambda item: item[1]))
-csv = sorted(ip.items(), key=lambda item: item[1])
-print(csv)
+print(sorted(ip.items(), key=lambda item: item[1]))
              
 fhcsv.close()
 fh.close()
