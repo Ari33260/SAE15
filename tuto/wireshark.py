@@ -24,22 +24,26 @@ for event in ress:
     if event.startswith('11:42'):
         texte=event.split(" ")
         if texte[5] == "Flags":
-            evenement='temps : '+texte[0]+' Adresse Ip source : '+texte[2]+' Adresse IP destinataire : '+texte[4]+' flag : '+texte[6]
-            if texte[6] == SYN:
-                evenement_3 = ' '
-                evenement_2 = 'Numéro de séquence : '+texte[8]+' Taille de la fenêtre : '+texte[10]+' Longueur du paquet : '+texte[12]
-            if texte[6] == POUSSER:
-                evenement_3 = ' '
-                evenement_2 = 'Numéro de séquence : '+texte[8]+' Numéro accusé de réception : '+texte[10]
+            evenement=texte[0]+';'+texte[2]+';'+texte[4]+';'+texte[6]
+            if texte[6] == "[S],":
+                evenement=evenement+';'+texte[8]
+            if texte[6] == "[P.],":
+                evenment=evenement+';'+texte[8]+';'+texte[10]
             if texte[6] == "[.],":
-                evenement_2 = 'Numéro accusé de réception : '+texte[8]+' Taille de la fenêtre : '+texte[10]
-                evenement_3 = ' Longueur du paquet : '+texte[12]
+                evenement=evenement+';'+texte[8]
             if texte[6] == "[S.],":
-                evenement_2 = 'Numéro de séquence : '+texte[8]+' Numéro accusé de réception : '+texte[10]+' Taille de la fenêtre : '+texte[12]
+                evenement=evenement+';'+texte[8]+';'+texte[10]
+        else:
+            evenement=texte[0]+';'+texte[2]+';'+texte[4]+';'
+
+            
+            
+            
         #print(evenement+evenement_2+evenement_3)
         #print("\n")
-        strevenement= ";".join(texte)+"\n"
-        resultat.append(strevenement)
+        #strevenement= ";".join(evenement+evenement_2+evenement_3)+"\n"
+        print(evenement+'\n')
+        resultat.append(evenement+'\n')
         ipv4=texte[2].split(".")
         if len(ipv4)>1:
             del ipv4[-1]
@@ -57,6 +61,7 @@ for key in ip.keys():
     
             
 with open('myfile.csv','w',newline='') as fhcsv:
+    fhcsv.write('temps;Adresse IP Source;Adresse IP Destinataire;Flag;Numéro de séquence;Numéro accusé de réception;Taille du paquet;\n')
     for i in resultat:    
         fhcsv.write(i)
 
